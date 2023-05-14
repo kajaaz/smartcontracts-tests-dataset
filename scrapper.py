@@ -12,7 +12,6 @@ for repository in repositories:
     if license_response.json()['license']['spdx_id'] not in ['MIT', 'Apache-2.0', 'GPL-2.0', 'GPL-3.0']:
         continue
     
-    # Extract Solidity files and associated unit tests
     # Initialize the list to store the Solidity files
     solidity_files = []
 
@@ -24,9 +23,7 @@ for repository in repositories:
     for content in contents_response.json():
         # Check if the content is a file with the .sol extension
         if content['type'] == 'file' and content['name'].endswith('.sol'):
-            # Fetch the content of the Solidity file
             file_response = requests.get(content['download_url'])
-            # Add the Solidity file to the list
             solidity_files.append({
                 'name': content['name'],
                 'content': file_response.text
@@ -38,7 +35,6 @@ for repository in repositories:
                 if test_content['type'] == 'file' and test_content['name'] == test_file_name:
                     # Fetch the content of the unit test file
                     test_file_response = requests.get(test_content['download_url'])
-                    # Add the unit test file to the list
                     solidity_files.append({
                         'name': test_content['name'],
                         'content': test_file_response.text
@@ -48,7 +44,6 @@ for repository in repositories:
     # Store the extracted files in a SQLite database
     import sqlite3
 
-    # Connect to the database
     conn = sqlite3.connect('solidity_files.db')
     c = conn.cursor()
 
